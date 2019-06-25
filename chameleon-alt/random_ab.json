@@ -1,0 +1,127 @@
+{
+    "apiVersion": "machinelearning.seldon.io/v1alpha2",
+    "kind": "SeldonDeployment",
+    "metadata": {
+        "labels": {
+            "app": "chameleon"
+        },
+    "name": "chameleon",
+	"namespace": "kubeflow"
+    },
+    "spec": {
+        "name": "chameleon",
+        "predictors": [
+            {
+                "componentSpecs": [
+					{
+						"metadata":{
+							"labels":{
+								"version":"v1",
+								"predictor_version": "v1",
+								"app": "chameleon"
+							}
+						},
+						"spec": {
+							"containers": [
+								{
+									"image": "gcr.io/ciandt-cognitive-sandbox/chameleon/seldon/tfserving-proxy:50ac075",
+									"name": "chameleon-v1"
+								}
+							],
+							"terminationGracePeriodSeconds": 10
+						}
+					},
+					{
+						"metadata":{
+							"labels":{
+								"version":"v2",
+								"predictor_version": "v2",
+								"app": "chameleon"
+							}
+						},
+						"spec": {
+							"containers": [
+								{
+									"image": "gcr.io/ciandt-cognitive-sandbox/chameleon/seldon/tfserving-proxy:50ac075",
+									"name": "chameleon-v2"
+								}
+							],
+							"terminationGracePeriodSeconds": 10
+						}
+					}
+				],
+				"graph": {
+					"name": "chameleon",
+					"endpoint": {},
+					"implementation": "RANDOM_ABTEST",
+					"parameters": [
+					{
+						"name": "ratioA",
+						"value": "0.2",
+						"type": "FLOAT"
+					}
+					],				
+
+					"children": [
+						{
+						"name": "chameleon-v1",
+						"endpoint": {
+							"type": "REST"
+						},
+						"type": "MODEL",
+						"children": [],
+
+						"parameters": [
+							{
+								"name":"grpc_endpoint",
+								"type":"STRING",
+								"value":"chameleon-svc:9000"
+							},
+							{
+								"name":"model_name",
+								"type":"STRING",
+								"value":"chameleon"
+							},
+							{
+								"name":"model_version",
+								"type":"STRING",
+								"value":"1"
+							}
+						]						  
+						},
+						{
+							"name": "chameleon-v2",
+							"endpoint": {
+							"type": "REST"
+							},
+							"type": "MODEL",
+							"children": [],
+
+
+							"parameters": [
+								{
+									"name":"grpc_endpoint",
+									"type":"STRING",
+									"value":"chameleon-svc:9000"
+								},
+								{
+									"name":"model_name",
+									"type":"STRING",
+									"value":"chameleon"
+								},
+								{
+									"name":"model_version",
+									"type":"STRING",
+									"value":"3"
+								}
+							]								
+						}
+					]
+				},
+				"name": "rec",
+				"replicas": 1
+            }
+        ]
+    }
+}
+

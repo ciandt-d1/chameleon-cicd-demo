@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: chameleon
+spec:
+  project: default
+  
+  source:
+    repoURL: ciandt-d1/chameleon-cicd-demo
+    targetRevision: master
+    path: chameleon
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kubeflow
+
+  # Sync policy
+  syncPolicy:
+    automated:
+      prune: false
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+spec:
+  project: default
+  
+  source:
+    repoURL: ciandt-d1/chameleon-cicd-demo
+    targetRevision: master
+    path: argocd
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  # Sync policy
+  syncPolicy:
+    automated:
+      prune: false      
