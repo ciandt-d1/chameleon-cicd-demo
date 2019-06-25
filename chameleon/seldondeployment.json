@@ -5,10 +5,14 @@
         "labels": {
             "app": "chameleon"
         },
-    "name": "chameleon",
-	"namespace": "kubeflow"
+        "name": "chameleon",
+	    "namespace": "kubeflow"
     },
     "spec": {
+        "annotations": {
+            "seldon.io/grpc-max-message-size":"100000000",
+            "seldon.io/grpc-read-timeout":"100000"
+        },        
         "name": "chameleon",
         "predictors": [
             {
@@ -16,110 +20,50 @@
 					{
 						"metadata":{
 							"labels":{
-								"version":"v1",
-								"predictor_version": "v1",
-								"app": "chameleon"
+                                "version":"v1",
+                                "predictor_version": "v1",
+                                "app": "chameleon"
 							}
-						},
+						},                        
 						"spec": {
 							"containers": [
 								{
 									"image": "gcr.io/ciandt-cognitive-sandbox/chameleon/seldon/tfserving-proxy:50ac075",
-									"name": "chameleon-v1"
+									"name": "chameleon"
 								}
 							],
-							"terminationGracePeriodSeconds": 10
-						}
-					},
-					{
-						"metadata":{
-							"labels":{
-								"version":"v2",
-								"predictor_version": "v2",
-								"app": "chameleon"
-							}
-						},
-						"spec": {
-							"containers": [
-								{
-									"image": "gcr.io/ciandt-cognitive-sandbox/chameleon/seldon/tfserving-proxy:50ac075",
-									"name": "chameleon-v2"
-								}
-							],
-							"terminationGracePeriodSeconds": 10
+							"terminationGracePeriodSeconds": 1
 						}
 					}
-				],
-				"graph": {
-					"name": "chameleon",
-					"endpoint": {},
-					"implementation": "RANDOM_ABTEST",
-					"parameters": [
-					{
-						"name": "ratioA",
-						"value": "0.2",
-						"type": "FLOAT"
-					}
-					],				
-
-					"children": [
-						{
-						"name": "chameleon-v1",
-						"endpoint": {
-							"type": "REST"
-						},
-						"type": "MODEL",
-						"children": [],
-
-						"parameters": [
-							{
-								"name":"grpc_endpoint",
-								"type":"STRING",
-								"value":"chameleon-svc:9000"
-							},
-							{
-								"name":"model_name",
-								"type":"STRING",
-								"value":"chameleon"
-							},
-							{
-								"name":"model_version",
-								"type":"STRING",
-								"value":"1"
-							}
-						]						  
-						},
-						{
-							"name": "chameleon-v2",
-							"endpoint": {
-							"type": "REST"
-							},
-							"type": "MODEL",
-							"children": [],
-
-
-							"parameters": [
-								{
-									"name":"grpc_endpoint",
-									"type":"STRING",
-									"value":"chameleon-svc:9000"
-								},
-								{
-									"name":"model_name",
-									"type":"STRING",
-									"value":"chameleon"
-								},
-								{
-									"name":"model_version",
-									"type":"STRING",
-									"value":"3"
-								}
-							]								
-						}
-					]
-				},
-				"name": "rec",
-				"replicas": 1
+                ],
+                "annotations": {
+                    "predictor_version": "single"
+                },	                
+                "graph": {
+                    "name": "chameleon",
+                    "endpoint": { "type" : "REST" },
+                    "type": "MODEL",
+                    "children": [],
+                    "parameters": [
+                        {
+                            "name":"grpc_endpoint",
+                            "type":"STRING",
+                            "value":"chameleon-svc:9000"
+                        },
+                        {
+                            "name":"model_name",
+                            "type":"STRING",
+                            "value":"chameleon"
+                        },
+                        {
+                            "name":"model_version",
+                            "type":"STRING",
+                            "value":"1"
+                        }
+                    ]	
+                },
+                "name": "rec",
+                "replicas": 1
             }
         ]
     }
