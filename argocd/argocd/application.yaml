@@ -6,7 +6,7 @@ spec:
   project: default
   
   source:
-    repoURL: ciandt-d1/chameleon-cicd-demo
+    repoURL: https://github.com/ciandt-d1/chameleon-cicd-demo.git
     targetRevision: master
     path: chameleon
 
@@ -27,7 +27,7 @@ spec:
   project: default
   
   source:
-    repoURL: ciandt-d1/chameleon-cicd-demo
+    repoURL: https://github.com/ciandt-d1/chameleon-cicd-demo.git
     targetRevision: master
     path: argocd
 

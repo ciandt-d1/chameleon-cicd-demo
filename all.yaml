@@ -663,8 +663,6 @@ spec:
         - /shared/app
         - --insecure
         - --disable-auth
-        - --basehref
-        - argocd/
         image: argoproj/argocd:v0.12.1
         imagePullPolicy: Always
         name: argocd-server
@@ -709,7 +707,7 @@ spec:
   project: default
   source:
     path: argocd
-    repoURL: https://github.com/ciandt-d1/mlops-demo.git
+    repoURL: https://github.com/ciandt-d1/chameleon-cicd-demo.git
     targetRevision: master
   syncPolicy:
     automated:
@@ -718,16 +716,16 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: mnist
+  name: chameleon
   namespace: argocd
 spec:
   destination:
-    namespace: seldon
+    namespace: kubeflow
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: mnist-seldon
-    repoURL: https://github.com/ciandt-d1/mlops-demo.git
+    path: chameleon
+    repoURL: https://github.com/ciandt-d1/chameleon-cicd-demo.git
     targetRevision: master
   syncPolicy:
     automated:
